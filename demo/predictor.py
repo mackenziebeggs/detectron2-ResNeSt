@@ -5,6 +5,7 @@ import multiprocessing as mp
 from collections import deque
 import cv2
 import torch
+import numpy as np
 
 from detectron2.data import MetadataCatalog
 from detectron2.engine.defaults import DefaultPredictor
