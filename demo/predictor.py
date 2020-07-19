@@ -96,10 +96,12 @@ class VisualizationDemo(object):
             elif "instances" in predictions:
                 predictions = predictions["instances"].to(self.cpu_device)
                 
+                ctr = 0
                 for x in predictions.pred_classes:
-                  print(x)
+                  if x == 0:
+                    ctr += 1
 
-                mask = predictions.pred_masks[:2].sum(0).clamp(0,1).unsqueeze(0).permute(1,2,0)
+                mask = predictions.pred_masks[:ctr].sum(0).clamp(0,1).unsqueeze(0).permute(1,2,0)
                 print(mask.shape)
                 np.save("mask.npy", mask)
             
