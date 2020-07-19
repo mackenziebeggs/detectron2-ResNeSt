@@ -95,8 +95,16 @@ class VisualizationDemo(object):
                 )
             elif "instances" in predictions:
                 predictions = predictions["instances"].to(self.cpu_device)
-                frame = frame * predictions.pred_masks.permute(1, 2, 0).numpy()[:, :, :3]
+                
+                for x in predictions.pred_classes:
+                  print(x)
+
+                mask = predictions.pred_masks[:2].sum(0).clamp(0,1).unsqueeze(0).permute(1,2,0)
+                print(mask.shape)
+                np.save("mask.npy", mask)
+            
                 vis_frame = video_visualizer.draw_instance_predictions(frame, predictions)
+          
             elif "sem_seg" in predictions:
                 vis_frame = video_visualizer.draw_sem_seg(
                     frame, predictions["sem_seg"].argmax(dim=0).to(self.cpu_device)
