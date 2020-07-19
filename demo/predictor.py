@@ -100,7 +100,7 @@ class VisualizationDemo(object):
                 mask = 0
                 for i, x in enumerate(predictions.pred_classes):
                   if x == 0:
-                    mask += predictions.pred_masks[i].sum(0).clamp(0,1).unsqueeze(0).permute(1,2,0)
+                    mask += predictions.pred_masks[i].unsqueeze(-1)
                 
                 mask = np.where(mask==True, 1, mask)
                 mask = np.where(mask==False, 0, mask)
