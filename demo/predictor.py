@@ -102,10 +102,22 @@ class VisualizationDemo(object):
                     ctr += 1
 
                 mask = predictions.pred_masks[:ctr].sum(0).clamp(0,1).unsqueeze(0).permute(1,2,0)
-                print(mask.shape)
-                np.save("mask.npy", mask)
-            
-                vis_frame = video_visualizer.draw_instance_predictions(frame, predictions)
+                
+                mask = np.where(mask==True, 1, mask)
+                mask = np.where(mask==False, 0, mask)
+                
+                frame = frame * mask
+                
+                vis_frame = cv2.normalize(src=frame, 
+                      dst=None, 
+                      alpha=0,
+                      beta=255, 
+                      norm_type=cv2.NORM_MINMAX, 
+                      dtype=cv2.CV_8U)
+                
+                #print(mask.shape)
+                #np.save("mask.npy", mask)
+                #vis_frame = video_visualizer.draw_instance_predictions(frame, predictions)
           
             elif "sem_seg" in predictions:
                 vis_frame = video_visualizer.draw_sem_seg(
@@ -113,7 +125,7 @@ class VisualizationDemo(object):
                 )
 
             # Converts Matplotlib RGB format to OpenCV BGR format
-            vis_frame = cv2.cvtColor(vis_frame.get_image(), cv2.COLOR_RGB2BGR)
+            #vis_frame = cv2.cvtColor(vis_frame.get_image(), cv2.COLOR_RGB2BGR)
             return vis_frame
 
         frame_gen = self._frame_from_video(video)
